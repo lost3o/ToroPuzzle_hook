@@ -109,19 +109,19 @@ void CheckOverlayPermission(JNIEnv *env, jclass thiz, jobject ctx){
 
 void Init(JNIEnv *env, jobject thiz, jobject ctx, jobject title, jobject subtitle){
     //Set sub title
-    setText(env, title, OBFUSCATE("<b>I was forced to use LGL</b>"));
+    setText(env, title, OBFUSCATE("<b>Toro Puzzle revival</b>"));
 
     //Set sub title
     setText(env, subtitle, OBFUSCATE("<b><marquee><p style=\"font-size:30\">"
-                                     "<p style=\"color:green;\">lost3</p> | "
-                                     "Pain. I hate LGL. I hate LGL. Why can't Zygisk ImGUI just work without Magisk? Ahbggsdi jgheqwroiaghuzjsewrih fgtj</p>"
+                                     "<p style=\"color:green;\">lost3, synzr</p> | "
+                                     "THANK YOU: synzr - Server code        This project is an attempt at reviving Toro Puzzle, a Doko Demo Issyo puzzle game made by BeXide and ForwardWorks (and PiG Games), which was shut down in 2021.</p>"
                                      "</marquee></b>"));
 
     //Dialog Example
     //setDialog(ctx,env,OBFUSCATE("Title"),OBFUSCATE("Message Example"));
 
     //Toast Example
-    Toast(env,ctx,OBFUSCATE("--^ lost3 ^-- || GAME MIGHT RELOAD"),ToastLength::LENGTH_LONG);
+    Toast(env,ctx,OBFUSCATE("--^ lost3 ^--"),ToastLength::LENGTH_LONG);
 
     initValid = true;
 }

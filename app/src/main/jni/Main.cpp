@@ -34,6 +34,12 @@ void* (MainMenu$Start) (void* ref) {
     old_MainMenu$Start(ref);
 }
 
+void* (*old_CommonAPI$GetDomainUrl) (void* ref, monoString* keyName);
+void* (CommonAPI$GetDomainUrl) (void* ref, monoString* keyName) {
+    return CreateIl2cppString("https://localhost:5000");
+}
+
+
 // we will run our hacks in a new thread so our while loop doesn't block process main thread
 void *hack_thread(void *) {
     LOGI(OBFUSCATE("pthread created"));
@@ -57,7 +63,6 @@ void *hack_thread(void *) {
     PATCH("0x2A9EA1C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetUtil.get_IsOfflineMode
     PATCH("0x29536BC", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Field.MainMenu.GetActive <--- FAILED ATTEMPT, WILL KEEP
     PATCH("0x2AF7E0C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Title.TitleProc.serverDataCheckValidData
-    PATCH("0x2CAC908", "01 00 A0 E3 1E FF 2F E1"); // Woncomz.Modules.LineSDK.LineSDKListener.get_SupportLanguaged
     //PATCH("0x2868A84", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_IsLogin
     //PATCH("0x2A9EA2C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetUtil.get_WasLogin
     //PATCH("0x2868B38", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_InternetReachability -> ReachableViaCarrierDataNetwork, will change!
@@ -66,14 +71,12 @@ void *hack_thread(void *) {
     // AddMoneyExample = (void (*)(void *, int)) getAbsoluteAddress(targetLibName, 0x123456);
     SceneManager$LoadScene = (void (*)(monoString*)) getAbsoluteAddress(targetLibName, 0x1B87EF8);
     MainMenu$SetActive = (void (*)(void*, bool)) getAbsoluteAddress(targetLibName, 0x29532A4);
-
-    PATCH("0x2AF73F4", "1E FF 2F E1"); // BX.App.Title.TitleProc.LanguageSetting
-    PATCH("0x2AA2024", "1E FF 2F E1"); // BX.App.Sys.PurchaseManager.Init
     // PATCH("0x2BD5FF4", "01 00 A0 E3 1E FF 2F E1"); // BI.RequestGameLanguageList
 
     sleep(1);
 
     HOOK("0x29532A4", MainMenu$Start, old_MainMenu$Start);
+    HOOK("0xC1C7C0", CommonAPI$GetDomainUrl, old_CommonAPI$GetDomainUrl);
 
     LOGI(OBFUSCATE("Done"));
 
