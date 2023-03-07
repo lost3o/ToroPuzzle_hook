@@ -109,7 +109,7 @@ void CheckOverlayPermission(JNIEnv *env, jclass thiz, jobject ctx){
 
 void Init(JNIEnv *env, jobject thiz, jobject ctx, jobject title, jobject subtitle){
     //Set sub title
-    setText(env, title, OBFUSCATE("<b>Toro Puzzle revival</b>"));
+    setText(env, title, OBFUSCATE("<b>Onsen Town rebooted</b>"));
 
     //Set sub title
     setText(env, subtitle, OBFUSCATE("<b><marquee><p style=\"font-size:30\">"
