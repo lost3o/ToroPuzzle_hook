@@ -24,15 +24,8 @@
 
 void (*SceneManager$LoadScene) (monoString* scene);
 
+void (*Application$OpenURL) (monoString* url);
 void (*MainMenu$SetActive) (void* ref, bool value);
-
-void* (*old_MainMenu$Start) (void* ref);
-void* (MainMenu$Start) (void* ref) {
-    if (ref != NULL) {
-        MainMenu$SetActive(ref, true);
-    }
-    old_MainMenu$Start(ref);
-}
 
 void* (*old_CommonAPI$GetDomainUrl) (void* ref, monoString* keyName);
 void* (CommonAPI$GetDomainUrl) (void* ref, monoString* keyName) {
@@ -70,12 +63,12 @@ void *hack_thread(void *) {
 
     // AddMoneyExample = (void (*)(void *, int)) getAbsoluteAddress(targetLibName, 0x123456);
     SceneManager$LoadScene = (void (*)(monoString*)) getAbsoluteAddress(targetLibName, 0x1B87EF8);
+    Application$OpenURL = (void (*)(monoString*)) getAbsoluteAddress(targetLibName, 0x19D15D4);
     MainMenu$SetActive = (void (*)(void*, bool)) getAbsoluteAddress(targetLibName, 0x29532A4);
     // PATCH("0x2BD5FF4", "01 00 A0 E3 1E FF 2F E1"); // BI.RequestGameLanguageList
 
     sleep(1);
 
-    HOOK("0x29532A4", MainMenu$Start, old_MainMenu$Start);
     HOOK("0xC1C7C0", CommonAPI$GetDomainUrl, old_CommonAPI$GetDomainUrl);
 
     LOGI(OBFUSCATE("Done"));
@@ -104,6 +97,7 @@ jobjectArray GetFeatureList(JNIEnv *env, jobject context) {
     jobjectArray ret;
 
     const char *features[] = {
+            "Button_Join discord"
     };
 
     //Now you dont have to manually update the number everytime;
@@ -127,6 +121,9 @@ void Changes(JNIEnv *env, jclass clazz, jobject obj,
          boolean, str != NULL ? env->GetStringUTFChars(str, 0) : "");
 
     switch (featNum) {
+        case 0:
+            Application$OpenURL(CreateIl2cppString("discord.gg/EPxCmpBABN"));
+            break;
     }
 }
 
