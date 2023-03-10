@@ -53,9 +53,9 @@ void *hack_thread(void *) {
     sleep(2);
 
     //PATCH("0x2868B1C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_IsOnline
-    PATCH("0x2A9EA1C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetUtil.get_IsOfflineMode
-    PATCH("0x29536BC", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Field.MainMenu.GetActive <--- FAILED ATTEMPT, WILL KEEP
-    PATCH("0x2AF7E0C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Title.TitleProc.serverDataCheckValidData
+    //PATCH("0x2A9EA1C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetUtil.get_IsOfflineMode
+    //PATCH("0x29536BC", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Field.MainMenu.GetActive <--- FAILED ATTEMPT, WILL KEEP
+    //PATCH("0x2AF7E0C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Title.TitleProc.serverDataCheckValidData
     //PATCH("0x2868A84", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_IsLogin
     //PATCH("0x2A9EA2C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetUtil.get_WasLogin
     //PATCH("0x2868B38", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_InternetReachability -> ReachableViaCarrierDataNetwork, will change!
