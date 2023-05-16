@@ -113,8 +113,8 @@ void Init(JNIEnv *env, jobject thiz, jobject ctx, jobject title, jobject subtitl
 
     //Set sub title
     setText(env, subtitle, OBFUSCATE("<b><marquee><p style=\"font-size:30\">"
-                                     "<p style=\"color:green;\">lost3, synzr</p> | "
-                                     "THANK YOU: synzr - Server code        This project is an attempt at reviving Toro Puzzle, a Doko Demo Issyo puzzle game made by BeXide and ForwardWorks (and PiG Games), which was shut down in 2021.</p>"
+                                     "<p style=\"color:green;\">Thanks synzr for the servers!</p> | "
+                                     "FUCK YOU APPSOLID. FUCK YOU SEWORKS."
                                      "</marquee></b>"));
 
     //Dialog Example

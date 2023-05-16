@@ -68,7 +68,7 @@ public class Menu {
     //********** Here you can easly change the menu appearance **********//
 
     //region Variable
-    public static final String TAG = "RealestPuzzleGame"; //Tag for logcat
+    public static final String TAG = "Mod_Menu"; //Tag for logcat
 
     int TEXT_COLOR = Color.parseColor("#82CAFD");
     int TEXT_COLOR_2 = Color.parseColor("#FFFFFF");

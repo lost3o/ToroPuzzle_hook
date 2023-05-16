@@ -1,7 +1,7 @@
 #include <list>
 #include <vector>
-#include <codecvt>
 #include <string.h>
+#include <codecvt>
 #include <pthread.h>
 #include <thread>
 #include <cstring>
@@ -15,23 +15,72 @@
 #include "Includes/Utils.h"
 #include "KittyMemory/MemoryPatch.h"
 #include "Menu/Setup.h"
-#include "Includes/Unity.hpp"
 
 //Target lib here
 #define targetLibName OBFUSCATE("libil2cpp.so")
 
 #include "Includes/Macros.h"
+#include "Includes/Unity.hpp"
 
-void (*SceneManager$LoadScene) (monoString* scene);
+/*bool feature1, feature2, featureHookToggle, Health;
+int sliderValue = 1, level = 0;
+void *instanceBtn;*/
 
-void (*Application$OpenURL) (monoString* url);
-void (*MainMenu$SetActive) (void* ref, bool value);
+//void (*AddMoneyExample)(void *instance, int amount);
+monoString* (*string$$Replace)(monoString* instance, monoString* oldValue, monoString* newValue);
 
-void* (*old_CommonAPI$GetDomainUrl) (void* ref, monoString* keyName);
-void* (CommonAPI$GetDomainUrl) (void* ref, monoString* keyName) {
-    return CreateIl2cppString("https://localhost:5000");
+monoString* (*old_CommonAPI$$GetDomainURL)(monoString* keyName);
+monoString* CommonAPI$$GetDomainURL(monoString* keyName) {
+    LOGE("CommonAPI.GetDomainURL edited from %s, %s was supposed to be returned", keyName->getChars(), old_CommonAPI$$GetDomainURL(keyName)->getChars());
+    return CreateIl2cppString("http://192.168.178.41:5000");
 }
 
+monoString* (*old_CryptPlayerPrefs$$Decrypt)(monoString* src);
+monoString* CryptPlayerPrefs$$Decrypt(monoString* src) {
+    LOGE("Bro is decrypting %s", src->getChars());
+    LOGE("Would end up to be %s", old_CryptPlayerPrefs$$Decrypt(src)->getChars());
+    return old_CryptPlayerPrefs$$Decrypt(src);
+}
+
+monoString* (*old_Crypt$$Encrypt)(monoString* uid);
+monoString* Crypt$$Encrypt(monoString* uid) {
+    LOGE("Bro is encrypting %s", uid->getChars());
+    return uid;
+}
+
+void* (*old_NTJson$$ParseJson)(monoString* json);
+void* NTJson$$ParseJson(monoString* json) {
+    LOGE("Tried to parse json: %s", json->getChars());
+    return old_NTJson$$ParseJson(json);
+}
+
+void* (*old___Internal$$OnRegisterToken)(bool success, monoString* pushToken);
+void* __Internal$$OnRegisterToken(bool success, monoString* pushToken) {
+    LOGE("OnRegisterToken success: (i'm assuming true), pushToken: %s", pushToken->getChars());
+    return old___Internal$$OnRegisterToken(success, pushToken);
+}
+
+monoString* sexmanip(monoString* inst) {
+    monoString* manipstr = inst;
+    manipstr = string$$Replace(manipstr, CreateIl2cppString("PiG"), CreateIl2cppString("SEWORKS")); // joke
+    manipstr = string$$Replace(manipstr, CreateIl2cppString("Ver: 1.2.1"), CreateIl2cppString("Lost3 - Mod menu (and figuring out appsolid)\nsynzr - Servers and hosting them\nToro's Friend Dungeon (discord server) - Archiving the files\n\nCirrus5075 - Greatest nuke supporter (halal)\nDSUser - Being extremely cool (facts)\nleggi - Simply being too good at ULTRAKILL\nrandomacman - Kuro's sake provider\nscePixel - Simply too cool\nKURO AND SORA - KISSING\n"));
+    return manipstr;
+}
+
+monoString* (*old_TMP_Text$get_text)(void* instance);
+monoString* TMP_Text$get_text(void* instance) {
+    return sexmanip(old_TMP_Text$get_text(instance));
+}
+
+monoString* (*old_Text$get_text)(void* instance);
+monoString* Text$get_text(void* instance) {
+    return sexmanip(old_Text$get_text(instance));
+}
+
+bool (*old_ReturnTrueIJustDontCare)();
+bool ReturnTrueIJustDontCare() {
+   return true;
+}
 
 // we will run our hacks in a new thread so our while loop doesn't block process main thread
 void *hack_thread(void *) {
@@ -50,30 +99,30 @@ void *hack_thread(void *) {
 
     LOGI(OBFUSCATE("%s has been loaded"), (const char *) targetLibName);
 
-    sleep(2);
+    sleep(3);
 
-    //PATCH("0x2868B1C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_IsOnline
-    //PATCH("0x2A9EA1C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetUtil.get_IsOfflineMode
-    //PATCH("0x29536BC", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Field.MainMenu.GetActive <--- FAILED ATTEMPT, WILL KEEP
-    //PATCH("0x2AF7E0C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Title.TitleProc.serverDataCheckValidData
-    //PATCH("0x2868A84", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_IsLogin
-    //PATCH("0x2A9EA2C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetUtil.get_WasLogin
-    //PATCH("0x2868B38", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_InternetReachability -> ReachableViaCarrierDataNetwork, will change!
-    //PATCH("0x286928C", "01 00 A0 E3 1E FF 2F E1"); // BX.App.Sys.NetManager.get_IsDeveloper // DELETE THIS IF THERE ARE ANY SIDE EFFECTS
+    // Hook example. Comment out if you don't use hook
+    // Strings in macros are automatically obfuscated. No need to obfuscate!
+    HOOK("0xC1C7C0", CommonAPI$$GetDomainURL, old_CommonAPI$$GetDomainURL);
+    HOOK("0x298FC98", CryptPlayerPrefs$$Decrypt, old_CryptPlayerPrefs$$Decrypt);
+    HOOK("0x2ABF7D0", Crypt$$Encrypt, old_Crypt$$Encrypt);
+    HOOK("0x26C74A8", NTJson$$ParseJson, old_NTJson$$ParseJson);
+    HOOK("0x270EAF0", __Internal$$OnRegisterToken, old___Internal$$OnRegisterToken);
+    PATCH("0x270C8F8", "01 00 A0 E3 1E FF 2F E1");
+    PATCH("0x270CA10", "01 00 A0 E3 1E FF 2F E1");
+    PATCH("0xC1F3E4", "01 00 A0 E3 1E FF 2F E1");
+    PATCH("0x19D2FC0", "01 00 A0 E3 1E FF 2F E1");
+    HOOK("0xA0DC70", TMP_Text$get_text, old_TMP_Text$get_text);
+    HOOK("0x15C0CCC", Text$get_text, old_Text$get_text);
 
-    // AddMoneyExample = (void (*)(void *, int)) getAbsoluteAddress(targetLibName, 0x123456);
-    SceneManager$LoadScene = (void (*)(monoString*)) getAbsoluteAddress(targetLibName, 0x1B87EF8);
-    Application$OpenURL = (void (*)(monoString*)) getAbsoluteAddress(targetLibName, 0x19D15D4);
-    MainMenu$SetActive = (void (*)(void*, bool)) getAbsoluteAddress(targetLibName, 0x29532A4);
-    // PATCH("0x2BD5FF4", "01 00 A0 E3 1E FF 2F E1"); // BI.RequestGameLanguageList
+    //PATCH("0x20D3A8", "0100A0E31EFF2FE1");
 
-    sleep(1);
+    //RESTORE("0x20D3A8");
 
-    HOOK("0xC1C7C0", CommonAPI$GetDomainUrl, old_CommonAPI$GetDomainUrl);
+    //AddMoneyExample = (void (*)(void *, int)) getAbsoluteAddress(targetLibName, 0x123456);
+    string$$Replace = (monoString* (*)(monoString*, monoString*, monoString*)) getAbsoluteAddress(targetLibName, 0x17A9450);
 
     LOGI(OBFUSCATE("Done"));
-
-    // SceneManager$LoadScene(CreateIl2cppString("!System"));
 
     //Anti-leech
     /*if (!iconValid || !initValid || !settingsValid) {
@@ -97,7 +146,9 @@ jobjectArray GetFeatureList(JNIEnv *env, jobject context) {
     jobjectArray ret;
 
     const char *features[] = {
-            "Button_Join discord"
+            OBFUSCATE("Category_This is all you need"),
+            OBFUSCATE("ButtonLink_Community discord_https://discord.gg/EPxCmpBABN"),
+            OBFUSCATE("Button_Credits"),
     };
 
     //Now you dont have to manually update the number everytime;
@@ -120,10 +171,14 @@ void Changes(JNIEnv *env, jclass clazz, jobject obj,
          env->GetStringUTFChars(featName, 0), value,
          boolean, str != NULL ? env->GetStringUTFChars(str, 0) : "");
 
+    //BE CAREFUL NOT TO ACCIDENTLY REMOVE break;
+
     switch (featNum) {
-        case 0:
-            Application$OpenURL(CreateIl2cppString("discord.gg/EPxCmpBABN"));
+        case 0: {
+            Toast(env,obj,OBFUSCATE("--^ lost3 ^--"),ToastLength::LENGTH_LONG);
+            Toast(env,obj,OBFUSCATE("synzr"),ToastLength::LENGTH_LONG);
             break;
+        }
     }
 }
 
