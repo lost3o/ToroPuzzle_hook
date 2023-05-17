@@ -28,6 +28,7 @@ void *instanceBtn;*/
 
 //void (*AddMoneyExample)(void *instance, int amount);
 monoString* (*string$$Replace)(monoString* instance, monoString* oldValue, monoString* newValue);
+monoString* (*object$$ToString)(void* instance);
 
 monoString* (*old_CommonAPI$$GetDomainURL)(monoString* keyName);
 monoString* CommonAPI$$GetDomainURL(monoString* keyName) {
@@ -77,6 +78,12 @@ monoString* Text$get_text(void* instance) {
     return sexmanip(old_Text$get_text(instance));
 }
 
+void* (*old_WebData$$Add)(void* instance, monoString* key, monoString* value);
+void* WebData$$Add(void* instance, monoString* key, monoString* value) {
+    LOGE("WebData.Add(\"%s\", \"%s\")", key->getChars(), value->getChars());
+    return old_WebData$$Add(instance, key, value);
+}
+
 bool (*old_ReturnTrueIJustDontCare)();
 bool ReturnTrueIJustDontCare() {
    return true;
@@ -114,6 +121,7 @@ void *hack_thread(void *) {
     PATCH("0x19D2FC0", "01 00 A0 E3 1E FF 2F E1");
     HOOK("0xA0DC70", TMP_Text$get_text, old_TMP_Text$get_text);
     HOOK("0x15C0CCC", Text$get_text, old_Text$get_text);
+    HOOK("0x27ABE04", WebData$$Add, old_WebData$$Add);
 
     //PATCH("0x20D3A8", "0100A0E31EFF2FE1");
 
@@ -121,6 +129,7 @@ void *hack_thread(void *) {
 
     //AddMoneyExample = (void (*)(void *, int)) getAbsoluteAddress(targetLibName, 0x123456);
     string$$Replace = (monoString* (*)(monoString*, monoString*, monoString*)) getAbsoluteAddress(targetLibName, 0x17A9450);
+    object$$ToString = (monoString* (*)(void*)) getAbsoluteAddress(targetLibName, 0x10B7558);
 
     LOGI(OBFUSCATE("Done"));
 
@@ -148,7 +157,7 @@ jobjectArray GetFeatureList(JNIEnv *env, jobject context) {
     const char *features[] = {
             OBFUSCATE("Category_This is all you need"),
             OBFUSCATE("ButtonLink_Community discord_https://discord.gg/EPxCmpBABN"),
-            OBFUSCATE("Button_Credits"),
+            OBFUSCATE("Button_Add stars")
     };
 
     //Now you dont have to manually update the number everytime;
@@ -175,8 +184,7 @@ void Changes(JNIEnv *env, jclass clazz, jobject obj,
 
     switch (featNum) {
         case 0: {
-            Toast(env,obj,OBFUSCATE("--^ lost3 ^--"),ToastLength::LENGTH_LONG);
-            Toast(env,obj,OBFUSCATE("synzr"),ToastLength::LENGTH_LONG);
+            Toast(env,obj,OBFUSCATE("Bro the game doesn't even work yet"),ToastLength::LENGTH_LONG);
             break;
         }
     }
